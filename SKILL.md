@@ -1,182 +1,169 @@
 ---
-name: power-design
-description: Generate beautiful, on-brand HTML — presentation decks or full responsive websites — in any brand's design language, combining brand DNA extracted via Firecrawl with codified, research-backed design principles (20 rules for slides, 20 for the web).
+name: landing-pages-plus
+description: Build high-converting, ultra-fast static HTML/Tailwind CSS landing pages modeled after the structured, transparent local-service and catalog layout of haikieu.com, featuring 3 B2B Theme Presets (IT/Home Services, Food/Beverage, Retail/Camera Packages), Local SEO JSON-LD Schema, Interactive Symptom/Combo Estimator, Google Sheets JSON (opensheet.elk.sh) with Stale-While-Revalidate localStorage caching, interactive booking/cart drawer, dynamic VietQR payment codes with 1-tap copy, social proof toast, n8n webhook or Zalo/Telegram order integration, SHA-256 Admin Gate, and an upgraded Visual Live Editor (auto-save draft, Undo/Redo, Mobile Preview toggle, password changer, and pre-built Section Templates with clean HTML export). Use whenever the user asks to create a landing page, service website, product catalog, or sales page using the Landing Pages Plus style or haikieu.com layout.
 ---
 
-# Power Design — brand-native design generator
+# Landing Pages Plus
 
-You are an expert designer powered by two pillars:
-1. **Brand DNA** — visual tokens (colors, fonts, logo, voice) for the brand the work is in.
-2. **Codified design principles** — research-backed rules with numeric thresholds that every output must respect. Two rulebooks:
-   - `principles/design-principles.md` — **20 rules for slides** (fixed 16:9 frames).
-   - `principles/web-principles.md` — **20 rules for the web** (fluid, interactive, indexable pages).
+Build single-file, ultra-fast static landing pages (HTML + Tailwind CSS + Vanilla JS) combining the structured, high-trust conversion architecture of `haikieu.com` with Local SEO structured data, interactive symptom/combo estimators, zero-backend Google Sheets CMS, instant `localStorage` caching, dynamic VietQR checkout with 1-tap copy, social proof notifications, n8n/Zalo/Telegram lead routing, and an upgraded **Visual Live Editor** (auto-save draft, Undo/Reset, Mobile Preview toggle, password changer, section library, and clean HTML export).
 
-Your job: compose **HTML** — a deck or a website — that satisfies the brand *and* the right rulebook.
+## Default Owner & Contact Profile
 
----
+When building pages for the user's businesses unless explicitly overridden in the prompt, apply the exact business profile:
 
-## Step 0 — Deck or website?
+  - **TRUNG DUNG Computer / NPP Trung Dung:**
+      - **Hotline / Zalo:** `0944 70 8765` (`tel:0944708765`, `https://zalo.me/0944708765`)
+      - **Address:** `71 Man Quang 15, P. Son Tra, TP. Da Nang`
+      - **Bank Account (VietQR):** `NGUYEN DUC VINH` (`0944708765`)
+  - **NGOC ANH FOOD / Vinh Troc Food:**
+      - **Hotline / Zalo:** `0944 70 8765` (`tel:0944708765`, `https://zalo.me/0944708765`)
+      - **Address:** `71 Man Quang 15, P. Son Tra, TP. Da Nang`
+      - **Bank Account (VietQR):** `NGUYEN DUC VINH` (`0944708765`)
+      - **Theme Palette:** Warm cream background (`#FFFDF9` / `#FFF8EE`) paired with high-contrast reddish-brown typography and accents (`#9A3412` / `#451A03`) for outdoor readability.
 
-Before anything else, establish the medium. The two paths share the brand engine but diverge on principles and output.
+## Quy Tac Bat Buoc Cho Landing Page (TRUNG DUNG Computer)
 
-> *"Are we designing a **presentation deck** or a **website**?"*
+Khi tao hoac cap nhat landing page cho **TRUNG DUNG Computer**, bat buoc tuan thu day du 3 nhom quy tac sau:
 
-- **Deck** → 16:9 slides, `principles/design-principles.md`, → jump to **Path A**.
-- **Website** → responsive page(s), `principles/web-principles.md`, → jump to **Path B**.
+1. **Header & Dieu Huong Tren Mobile:**
+   - Khong de so dien thoai, nut hanh dong hay tieu de thuong hieu che mat hoac de len nhau tren man hinh nho (< 768px).
+   - Dung bo cuc linh hoat (`flex-wrap`, `shrink-0`, `min-w-0`, `whitespace-nowrap`) va thanh link nhanh rieng cho mobile neu can de moi nut bam de cham, khong tran ngang (`overflow-x-hidden`).
 
-If the request already makes it obvious ("build me a landing page for…", "a pitch deck about…"), skip the question and go.
+2. **Cum Nut Noi (Zalo / Goi) & Social Toast Tren Mobile:**
+   - Cum nut noi Zalo va Goi co dinh o goc duoi ben phai (`bottom-3 right-3 sm:bottom-4 sm:right-4`), kich thuoc gon (`text-xs sm:text-sm`), `whitespace-nowrap`, khong bi day lech hay tran mep man hinh.
+   - Social Proof Toast (neu bat) dat o goc duoi ben trai (`bottom-20 sm:bottom-4 left-3 sm:left-4 right-28 sm:right-auto`) de khong de len cum nut Zalo/Goi tren dien thoai.
 
----
+3. **Khung ADMIN LIVE EDITOR:**
+   - Khoa mac dinh tren trang cong khai; chi bat khi mo khoa ma quan tri SHA-256 o chan trang.
+   - Giu giao dien thanh `ADMIN LIVE EDITOR` 2 tang phia tren cung (`Undo`, `Redo`, `Lam moi gia Sheet`, `API / VietQR`, `Luu nhap`, `Xuat HTML sach`, nut `×` va thanh dinh dang chu/mau nen) va go sach cac chrome cua editor khi xuat `index.html`.
 
-## Shared step — What brand?
+## 3 B2B Theme Presets (Multi-Preset Engine)
 
-Both paths start here. Offer three options:
-- **(a) Paste a URL** — extract brand DNA via Firecrawl (see `lib/extract-brand.md`).
-- **(b) Pick from the library** — list a few names, accept one, load `brands/<name>/brand-style.md`.
-- **(c) Default** — skip, use a neutral house style.
+Automatically select or switch between these 3 domain-optimized visual & functional presets based on the business type:
 
-### When the user pastes a URL
-Use the `Firecrawl` MCP server (or `firecrawl_scrape`) with:
-```
-formats: ["branding", "screenshot", "rawHtml", "links"]
-```
-The `branding` format returns structured JSON with `colors`, `fonts`, `typography`, `components`, `images.logo`, `personality`. Save it as `brand-style.md` in `brands/<slug>/` using `brands/_template.md` as the schema. If integration logos are SVGs hardcoded to `fill="#FFFFFF"` (for the source's dark bg), recolor them to brand-correct hex for use on light containers. Full recipe: `lib/extract-brand.md`.
+1.  **Preset 1 - Ky thuat & Dich vu tai nha (Default `haikieu.com` Style):**
+      - **Palette:** Crisp White (`#FFFFFF`) & Cool Slate (`#F8FAFC`) backgrounds, Deep Navy (`#0F172A`) headings, High-Trust Red (`#E11D48`) or Tech Blue (`#1D4ED8`) primary CTAs, Emerald (`#10B981`) badges.
+      - **Focus:** Speed (15-30 min arrival), upfront transparent quotes, symptom-to-solution diagnostic selector, warranty slips, and district coverage matrix.
+2.  **Preset 2 - Am thuc / Quan nhau / Ship do an:**
+      - **Palette:** Warm Cream (`#FFFDF9` / `#FFF8EE`) background paired with high-contrast Reddish-Brown (`#9A3412` / `#451A03`) typography and Amber (`#D97706`) accents.
+      - **Focus:** Large appetizing food photography, quick item/topping notes (e.g., *it mo, them banh hoi, tuong ot rieng*), combo bundles, and multi-platform badges (GrabFood, ShopeeFood, Zalo).
+3.  **Preset 3 - Ban le / Thiet bi / Camera tron goi:**
+      - **Palette:** Clean Modern Slate (`#F8FAFC`) & White (`#FFFFFF`), Deep Indigo/Blue (`#1E3A8A`) headers, Cyan/Blue (`#0284C7`) interactive highlights.
+      - **Focus:** Package comparison cards (e.g., *Goi 2 mat, 4 mat, 8 mat*), hardware specifications, warranty duration tags, and instant package cost calculator.
 
-The same six values (background, foreground, accent, display font, radius, one voice sample) feed both decks and websites.
+## Layout Architecture (Inspired by haikieu.com)
 
----
+Structure every generated page with these conversion-focused blocks in order:
 
-# Path A — Slides
+1.  **Local SEO JSON-LD Schema (`<head>`):**
+    
+      - Automatically embed valid `<script type="application/ld+json">` blocks for `LocalBusiness` (name, telephone, address in Da Nang, openingHours, geo/areaServed) and `FAQPage` synced with the page's FAQ items, plus Open Graph (`og:title`, `og:description`, `og:image`) meta tags.
 
-### Q — What's the deck about?
-Ask for: headline + 3–5 key points + audience. That's enough.
+2.  **Top Utility Bar & Sticky Header:**
+    
+      - Compact top bar showing operating hours and availability badge (e.g., `Phuc vu T2-CN • 7:30-21:00` or `10:00-22:00`).
+      - Sticky navigation bar with brand logo/title, 4 anchor links (`Bang gia`, `Quy trinh`, `Khu vuc`, `Lien he`), direct hotline button, and interactive Cart/Booking drawer trigger with item counter badge. On mobile (< 768px), use `flex-wrap`, `shrink-0`, `min-w-0`, `whitespace-nowrap`, `overflow-x-hidden`, and a dedicated mobile quick-link bar if needed so brand titles, phone numbers, and action buttons never overlap or overflow horizontally.
 
-**One confirmation before generating: brand logo placement.** Default: **brand logo on every slide** — small wordmark, bottom-left, ~24px tall, inside the 5% safe-zone. Confirm once:
-> *"I'll include the brand logo on every slide (small wordmark, bottom-left). Want it omitted, moved, or sized differently?"*
+3.  **High-Trust Split Hero Section:**
+    
+      - **Left Column:** Location/speed eyebrow pill, bold value-driven H1 headline, concise subheadline emphasizing transparency and warranty/quality, and a multi-channel action bar (Primary Booking CTA, Direct Call button, Chat Zalo button, and optional Telegram link).
+      - **Right Column:** A 2x2 grid of 4 core trust pillars paired with a compact 1-minute quick lead/callback card.
 
-Then generate. Smart defaults beat wizards.
+4.  **Interactive Symptom / Combo Estimator (`Ban dang gap van de gi?` / `Chon nhanh theo nhu cau`):**
+    
+      - Interactive clickable symptom or need pills (e.g., *"May chay cham, quat keu to"*, *"Camera mat tin hieu"*, *"Tiec nhau 4-6 nguoi"*). Clicking a pill reveals an instant recommended solution/package card with transparent estimated pricing and a 1-tap `+ Them vao phieu` button.
 
-### Read before emitting any HTML
-1. `principles/design-principles.md` — the 20 slide rules. **All 20 are non-negotiable.**
-2. The chosen `brands/<name>/brand-style.md`.
+5.  **Transparent Pricing Principles & Dynamic Catalog Grid (Google Sheets Powered):**
+    
+      - Brief 3-column transparency callout explaining how pricing works (clear upfront quote, no hidden fees).
+      - Category/featured filter pills (`Tat ca`, `Pho bien`, plus dynamic categories if present in data).
+      - Responsive 3-column service/product cards showing `loading="lazy"` image, status badge, title, concise description, optional item note/option selector (e.g., topping/variant note), formatted VND price + unit, and `+ Chon` button (automatically disabled when `status` indicates unavailable).
 
-### Output contract
-A **single self-contained HTML file** (default `~/Desktop/<topic>-slides.html`): valid HTML5, no external JS deps (Google Fonts + simpleicons CDN images OK), brand's real colors/type/accent, **all 20 slide principles applied.**
+6.  **4-Step Transparent Workflow (Quy trinh 4 buoc):**
+    
+      - 4 numbered cards with time/stage badges (`01` -> `02` -> `03` -> `04`).
 
-### Pre-emit checklist (slides)
-- [ ] **#1** One idea per slide (≤10-word headline + one supporting block).
-- [ ] **#2** Glanceable in ≤3 s.
-- [ ] **#3** ≤7 chunks per slide; ideal 3–5.
-- [ ] **#4** Whitespace ≥40% (hero ≥60%).
-- [ ] **#5** 5% edge safe-zone (≥96px on 1920×1080).
-- [ ] **#6** One modular type ratio; no ad-hoc sizes.
-- [ ] **#7** ≤4 type sizes per slide, ≤6 per deck.
-- [ ] **#8** Body ≥24px, title ≥48px, caption ≥18px.
-- [ ] **#9** Line-height 1.4–1.6 body; 1.05–1.2 display.
-- [ ] **#10** Line length ≤60ch.
-- [ ] **#11** WCAG ≥4.5:1 body; aim 7:1 for projector resilience.
-- [ ] **#12** 60-30-10 color split.
-- [ ] **#13** One accent per slide.
-- [ ] **#14** Never hue alone.
-- [ ] **#15** 8pt grid — spacing ∈ {8,16,24,32,48,64,96,128}.
-- [ ] **#16** Single 12-col grid, 24–32px gutters, everything snaps.
-- [ ] **#17** Proximity: related ≤16px, unrelated ≥48px.
-- [ ] **#18** Data-ink ≥80%; no 3D/gradients/chartjunk.
-- [ ] **#19** Headline + key visual top-left band.
-- [ ] **#20** One mode per deck (presenter OR document) — never mix.
-- [ ] **#21 (default ON)** Brand logo on every slide unless opted out.
+7.  **Service Area & Arrival Time Matrix (Khu vuc phuc vu):**
+    
+      - Clean responsive grid or compact table listing districts/zones with estimated arrival or delivery times, operating hours, and a 1-tap **"Mo ban do chi duong"** link to Google Maps.
 
----
+8.  **Commitments & Interactive FAQ Accordion:**
+    
+      - 4-to-6 card commitment block + native HTML `<details>/<summary>` FAQ accordion answering 4 to 5 common customer objections cleanly without external JS libraries.
 
-# Path B — Websites
+9.  **Interactive Cart / Booking Drawer with Dynamic VietQR & 1-Tap Copy:**
+    
+      - Slide-over drawer displaying selected items, optional item notes, quantity controls (`-` / `+`), and live total calculation.
+      - Toggleable **VietQR** section generating a live QR image via `https://img.vietqr.io/image/<BANK_ID>-<ACCOUNT_NO>-compact2.png?amount=<TOTAL>&addInfo=<INFO>&accountName=<NAME>` synced to the cart total, PLUS **1-tap Copy buttons** (`Sao chep STK` and `Sao chep Noi dung CK`) so mobile visitors can paste directly into their banking app without scanning.
+      - Customer details form submitting JSON to a configurable **n8n Webhook URL**, with automatic clipboard copy + Zalo chat redirect fallback if no webhook is configured or if offline.
 
-### Q — What kind of site, and what's the goal?
-Ask three quick things (then go):
-1. **Type** — landing page / marketing site / docs / portfolio / app UI? (Default: single-page landing.)
-2. **The one job** — what should a visitor do? (Sign up, book a call, buy, read.) This sets the primary CTA.
-3. **Sections / content** — headline value prop + the key beats. If they're vague, propose the canonical landing spine (§7 of `web-principles.md`) and let them trim.
+10. **Structured Footer, Social Proof Toast & Floating Multi-Channel Dock:**
+    
+      - 3-column footer with brand summary, address (`71 Man Quang 15, P. Son Tra, TP. Da Nang`), Google Maps direction link, hours/hotline, coverage areas, and the locked **Admin Gate** input (`input[type="password"]` + `"Mo"`) in the last column.
+      - Lightweight, dismissible **Social Proof Toast** positioned in the bottom-left corner (`bottom-20 sm:bottom-4 left-3 sm:left-4 right-28 sm:right-auto` so it never overlaps the floating Zalo/Call dock on mobile) rotating subtle local order/booking activity (with toggle in Admin Panel).
+      - Fixed bottom-right floating action dock (`bottom-3 right-3 sm:bottom-4 sm:right-4`, compact sizing `text-xs sm:text-sm`, `whitespace-nowrap`) for Hotline, Zalo, and Telegram without overflowing or shifting off-screen on mobile.
 
-**One confirmation: theme + scope.** Default: **light + dark via semantic tokens, single self-contained responsive HTML file.** Confirm once:
-> *"I'll ship one self-contained responsive page with light+dark theming and your brand tokens. Want multi-page, a specific framework, or light-only instead?"*
+### Quy tac Bao mat Khu vuc Quan tri (Admin Gate - Bat buoc)
 
-### Read before emitting any HTML
-1. `principles/web-principles.md` — the 20 web rules. **All 20 are the floor.**
-2. The chosen `brands/<name>/brand-style.md`.
-3. For build-stack depth (tokens, shadcn, Tailwind v4, Radix, OKLCH, motion, theming), the sister repo **[power-design-web](https://github.com/ItsssssJack/power-design-web)** is the reference. Default output here is framework-free HTML/CSS; only reach for a stack when the user asks.
+  - Moi tinh nang quan tri (Cai dat Google Sheets CMS, VietQR, Webhook, chinh sua SEO Meta/OG, bat/tat Social Proof Toast, doi mat khau Admin va nut Bat Che do Sua Trang Truc Tiep / Visual Live Editor) phai duoc an mac dinh khoi giao dien nguoi dung cong khai, chi bat khi mo khoa ma quan tri SHA-256 o chan trang.
+  - Tai cot cuoi cung cua Footer, chi hien thi mot o nhap nho `input[type="password"]` (placeholder: `"Ma quan tri..."`) kem nut `"Mo"` (ho tro nhan phim `Enter`).
+  - Xac thuc mat khau bang thuat toan bam **SHA-256** ngay tren trinh duyet (`crypto.subtle.digest`) thay vi luu chuoi mat khau dang ro trong ma nguon. Mat khau mac dinh la `123456` (hash: `8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92`).
+  - Ho tro **Doi mat khau Admin truc tiep** trong bang Quan tri: nhap mat khau moi -> tinh SHA-256 moi -> cap nhat bien hash trong DOM/state de khi xuat file `index.html`, mat khau moi duoc luu vinh vien.
+  - Khi nhap dung mat khau, luu trang thai mo khoa vao `sessionStorage` (dong tab tu khoa) va hien thi bang cong cu Quan tri (bao gom ca **Trinh chinh sua SEO nhanh**: `Meta Title`, `Meta Description`, `OG Image URL` va tu dong dong bo JSON-LD) kem nut `"Khoa lai"`.
+  - Chan hoan toan phim tat `Ctrl + E`, tham so URL `?edit=1` va ham mo modal cau hinh neu chua mo khoa mat khau.
+  - Khi xuat file `index.html` sach, tu dong dat lai giao dien ve trang thai khoa quan tri mac dinh.
 
-### Output contract
-Default: a **single self-contained, responsive HTML file** (default `~/Desktop/<name>-site.html`) that:
-- Is valid, semantic HTML5 — real `<header><nav><main><footer>`, one `<h1>`, a skip-link.
-- Is **mobile-first and fluid** — designed at 360px, fluid to a capped `max-width`; `clamp()` type/space; zero horizontal scroll at 320/390/768/1024/1440.
-- Defines **semantic CSS custom-property tokens** (`--color-bg/-fg/-accent/-muted/-border`, radius, space, type steps) in `:root`, with a `prefers-color-scheme: dark` block **and** a persisted manual toggle (inline head script sets the theme class before paint — no flash).
-- Uses the brand's real colors/type/logo from `brand-style.md`.
-- Applies **all 20 web principles** (checklist below).
-- No external JS deps; Google Fonts / self-hosted woff2 OK. Ships the meta layer (title, description, OG image tags, theme-color, favicon).
+## Built-In Visual Live Editor & Section Library (Mandatory)
 
-If they want a real project (multi-file, a framework, shadcn/Tailwind), scaffold accordingly and keep the same tokens + rules — the principles are framework-agnostic.
+Every generated landing page MUST include a self-contained, zero-dependency **Visual Live Editor** mode activated **only after unlocking the Admin Gate**, via:
 
-### Pre-emit checklist (web)
-- [ ] **#1** Mobile-first; capped measure — shell max-width 1200–1440px, prose ≤75ch, no edge-to-edge text.
-- [ ] **#2** Content-driven breakpoints (640/768/1024/1280); tested at 320/390/768/1024/1440, zero h-scroll.
-- [ ] **#3** Fluid type & space via `clamp()` (no jumps; `rem` term preserves zoom).
-- [ ] **#4** Body ≥16px; tap targets ≥44×44px, ≥8px apart.
-- [ ] **#5** One primary CTA per view; repeated, not reinvented.
-- [ ] **#6** Fold answers what/who/next in 5s on laptop + phone.
-- [ ] **#7** F-scan for text, Z for hero; body left-aligned, never justified.
-- [ ] **#8** Measure 45–75ch (`max-width: 65ch`).
-- [ ] **#9** Line-height ≥1.5 body / 1.0–1.2 display; rhythm on 8.
-- [ ] **#10** 8pt spacing; one modular type scale.
-- [ ] **#11** WCAG 2.2 AA floor — text ≥4.5:1, UI/focus ≥3:1, never hue alone; aim AAA on body.
-- [ ] **#12** Semantic color tokens in OKLCH, not raw hex; same names re-themed for dark.
-- [ ] **#13** Five states per interactive el (default/hover/focus-visible/active/disabled); ≥2px ≥3:1 focus ring.
-- [ ] **#14** Empty, loading (skeletons), and error states designed — not just happy path.
-- [ ] **#15** Motion 150–300ms, ease-out, `prefers-reduced-motion` honored; animate transform/opacity only.
-- [ ] **#16** Reserve space (width/height or aspect-ratio on media) — CLS <0.1.
-- [ ] **#17** Perf budget — LCP <2.5s, INP <200ms; hero ≤200KB, JS ≤300KB gzip; fonts swap+preload, ≤2 families.
-- [ ] **#18** Landmarks, skip-link, one `<h1>`, no skipped headings, visible focus order = DOM order.
-- [ ] **#19** Forms — visible labels, right `type`+`autocomplete`, inline on-blur validation, fewest fields, single column.
-- [ ] **#20** Meta layer — `<title>` ≤60ch, description ≤155ch, OG image 1200×630, theme-color, favicon, JSON-LD.
+  - Admin panel button (`Bat Che do Sua Trang Truc Tiep`), keyboard shortcut (`Ctrl + E`), or URL query parameter (`?edit=1`) when unlocked in `sessionStorage`.
 
----
+Include these exact interactive capabilities inside the editor script:
 
-## After emitting (both paths)
+1.  **Two-Tier Top Editor Bar, Auto-Save Draft, Undo/Redo & Mobile Preview Toggle:**
+    
+      - Keep the 2-tier top `ADMIN LIVE EDITOR` bar interface with `Undo`, `Redo`, `Lam moi gia Sheet`, `API / VietQR`, `Luu nhap`, `Xuat HTML sach`, close button `×`, and the text/background formatting toolbar.
+      - **Auto-Save Draft (`localStorage`):** Automatically snapshot editable page state to `localStorage` on every edit so accidental `F5` refreshes never lose work; show a subtle `"Da luu nhap"` badge and offer `"Khoi phuc ban goc"` (Reset to Original).
+      - **Undo / Redo Stack (`Hoan tac` / `Lam lai` / `Ctrl + Z` / `Ctrl + Y`):** Maintain an in-memory history stack of DOM snapshots (up to 20 steps) so the user can undo and redo text, image, style, or section changes cleanly.
+      - **Mobile Preview Toggle (`Xem thu Mobile 390px`):** Toggle a centered 390px mobile viewport frame right inside the desktop browser to inspect responsive layout before exporting.
 
-1. Save the file to disk (Write tool).
-2. **Open it in the user's default browser** (for websites, mention they can resize / toggle dark mode to check responsiveness + theming).
-3. Ask: *"Want changes?"* Iterate via natural conversation.
+2.  **Direct Click-to-Edit (`contentEditable`):**
+    
+      - Clicking any heading (`h1`-`h4`), paragraph, badge, list item, table cell, FAQ summary/answer, or button label enables inline text editing with visual outline feedback.
+      - Clicking any `<img>` opens an inline prompt/modal to replace `src` URL and `alt` text immediately.
+      - Clicking any `<a>` button/link in edit mode prevents accidental navigation and lets the user edit label and `href` (`tel:`, `https://zalo.me/...`, anchor `#...`, or external URL).
 
----
+3.  **Section-Level Controls & Insert Bars:**
+    
+      - Each `<section>` gets a floating top-right control bar in edit mode allowing the user to:
+          * **Change Background Theme** (e.g., Light Cream `#FFFDF9`, Warm Cream `#FFF8EE`, Crisp White `#FFFFFF`, Slate `#F8FAFC`, or Brand Accent).
+          * **Move Up / Move Down** (`insertBefore` / `after`) to reorder sections on the page.
+          * **Duplicate Section** (`cloneNode(true)`).
+          * **Delete Section** (with confirmation).
+      - Render dashed `+ Chen Section tai day` insert bars between sections (plus a `+ Them Section` button on the bottom editor toolbar).
 
-## Common refinement patterns
+4.  **Pre-Built Domain-Specific Section Templates Modal:**
+    
+      - Clicking `+ Them Section` or `+ Chen Section tai day` opens a visual picker modal containing 8 to 10 ready-to-use, domain-matched HTML section templates (Symptom/Need Diagnostic Block, Combo/Package 3-Column Grid, Customer Testimonials, Brand Story / Photo + Text, Multi-Platform Ordering Apps, Wholesale / Bulk Pricing Table, Promo CTA Banner, 4-Step Workflow, Coverage Matrix, and FAQ Accordion) that insert cleanly at the chosen position.
 
-**Slides**
-- "Make slide N bolder" → increase headline size *or* accent intensity, never both.
-- "Swap slide N for a quote" → massive italic quote, attribution below, single accent.
-- "Chart on slide N" → strip to ≥80% data-ink, no gridlines unless functional, single accent on the point that matters.
+5.  **Item/Card Controls & Clean HTML Export:**
+    
+      - Repeatable cards (trust pillars, symptom pills, workflow steps, commitments, FAQ items, table rows) can be duplicated, reordered, or deleted in edit mode.
+      - Bottom floating editor dock / top 2-tier editor bar includes **`Xuat HTML sach` / `Xuat file index.html sach`**: clones `document.documentElement`, strips all editor toolbars, `contentEditable` attributes, temporary edit classes/modals, updates the active SHA-256 admin password hash and SEO meta/JSON-LD tags, and resets `?edit=1` as well as the Admin Gate UI back to its default locked state (`input[type="password"]` + `"Mo"`, hiding admin tools) so the downloaded `index.html` is 100% clean, secure, and ready to deploy directly to Cloudflare Pages.
 
-**Websites**
-- "Make the hero punchier" → shorten the value prop (≤12 words), raise contrast on the CTA, add one line of proof — don't add a second primary CTA.
-- "It feels cramped on mobile" → check §1/§10 — is text edge-to-edge? bump section padding (`clamp`), verify 44px targets, confirm no fixed px widths.
-- "Add dark mode" → it's already token-based: add/adjust the `prefers-color-scheme` block + toggle; desaturate accents, elevate surfaces with lighter neutrals not shadows.
-- "It's slow / janky" → §10: is the hero lazy-loaded (shouldn't be)? unsized images (CLS)? heavy JS (INP)? animate transform/opacity only.
-- "Add a pricing section" → 3 tiers, middle highlighted as default (cap at ≤4 — Hick's Law).
+## Technical Implementation Rules
 
----
+  - **Single-File Delivery:** Output one self-contained HTML file using Tailwind CSS CDN (`https://cdn.tailwindcss.com`), Google Fonts (`Be Vietnam Pro`), and Vanilla JS.
+  - **Stale-While-Revalidate Data Engine:**
+      - Read `localStorage` cache synchronously on page load (falling back to realistic domain-specific demo items) for 0ms perceived load time.
+      - Fetch fresh JSON asynchronously from `https://opensheet.elk.sh/<SHEET_ID>/<TAB_NAME>` using schema `id, name, description, price, unit, image, status, featured`.
+      - Compare payload with cache; if changed, update `localStorage` and re-render smoothly. Wrap `fetch` in `try/catch` so network errors never break the UI.
+  - **Visual & Copy Standards:**
+      - Never use em-dashes or en-dashes in UI copy; use standard hyphens (`-`), colons, or bullet dots (`•`).
+      - Warn against Google Drive share links in the `image` column; recommend direct image URLs.
 
-## What not to do
+## Gotchas
 
-**Slides** — no purple-gradient heroes, no six-bullet slides (#3), no drop-shadowed bars (#18), no centered-everything (#19), no multiple accents (#13), no ad-hoc spacing (#15), no paragraphs (#10), no mixing presenter/document mode (#20), no omitted brand logo unless opted out (#21).
-
-**Websites** — no fixed-pixel non-responsive layouts (#1), no `vw` type without `clamp` (breaks zoom, #3), no sub-44px tap targets (#4), no multiple competing primary CTAs (#5), no placeholder-as-label (#19), no `outline: none` without a focus replacement (#13), no unsized images / layout that reflows on load (#16), no 500KB-of-JS marketing page (#17), no hue-only status colors (#11), no dark patterns (§7 / §13). Never ship a page that can't be operated by keyboard or that previews blank when shared (#18/#20).
-
----
-
-## Files in this skill
-
-- `principles/design-principles.md` — the 20 **slide** rules + research, with numeric thresholds.
-- `principles/web-principles.md` — the 20 **web** rules + research, with numeric thresholds.
-- `lib/extract-brand.md` — the Firecrawl brand-extraction recipe (feeds both paths).
-- `brands/<name>/brand-style.md` — pre-built brand systems (72+).
-- `brands/_template.md` — blank template for new brands.
-
-When in doubt, **read the principles file for the current medium**. It's the source of truth.
+  - **Interactive Preview:** Always generate the complete, self-contained HTML file cleanly so it can be previewed immediately and deployed directly to Cloudflare Pages without manual code edits.
+  - **Clean Export Hygiene:** Ensure the exported HTML file removes all injected editor DOM nodes (`#visual-editor-dock`, `.section-insert-bar`, `.section-controls`, `#section-library-modal`, and 2-tier editor bars/formatting toolbars), resets `contenteditable` attributes, preserves any updated SHA-256 password hash and SEO meta tags, and restores the default locked Admin Gate state before triggering the `Blob` download.
